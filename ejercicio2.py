@@ -1,71 +1,64 @@
 class Mision:
-    def __init__(self, tipo, reino, solicitante):
+    def __init__(self, tipo, reino, dios):
         self.tipo = tipo
         self.reino = reino
-        self.solicitante = solicitante
+        self.dios = dios
 
-class Recurso:
-    def __init__(self, nombre, cantidad):
-        self.nombre = nombre
-        self.cantidad = cantidad
+# Función para asignar recursos a una misión
+def asignar_recursos(misiones_pendientes, valkirias_disponibles, unidades_disponibles):
+    if not misiones_pendientes:
+        print("No hay misiones pendientes.")
+        return
 
-class AsignadorRecursos:
-    def __init__(self):
-        self.recursos_disponibles = {
-            "Valkirias": 100,
-            "Unidades": 500
-        }
+    # Ordenar las misiones por prioridad
+    misiones_pendientes.sort(key=lambda x: x.dios in ["Odín", "Loki"], reverse=True)
 
-    def asignar_recursos(self, mision):
-        if mision.solicitante in ["Odín", "Loki"]:
-            prioridad = "Alta"
-        else:
-            prioridad = "Normal"
+    # Procesar cada misión pendiente
+    for mision in misiones_pendientes:
+        print(f"Atendiendo misión: Tipo - {mision.tipo}, Reino - {mision.reino}, Dios - {mision.dios}")
 
-        print(f"\nAsignando recursos para la misión de {mision.tipo} en el reino {mision.reino}, solicitada por {mision.solicitante} (Prioridad: {prioridad})")
-
+        # Asignar recursos según el tipo de misión
         if mision.tipo == "defensa":
-            valkirias_necesarias = 20
-            unidades_necesarias = 100
+            valkirias_asignadas = min(valkirias_disponibles, 3)
+            unidades_asignadas = min(unidades_disponibles, 100)
         elif mision.tipo == "exploración":
-            valkirias_necesarias = 10
-            unidades_necesarias = 50
+            valkirias_asignadas = min(valkirias_disponibles, 5)
+            unidades_asignadas = min(unidades_disponibles, 50)
         elif mision.tipo == "conquista":
-            valkirias_necesarias = 30
-            unidades_necesarias = 150
+            valkirias_asignadas = min(valkirias_disponibles, 10)
+            unidades_asignadas = min(unidades_disponibles, 200)
         else:
             print("Tipo de misión no válido.")
-            return
+            continue
 
-        if self.recursos_disponibles["Valkirias"] >= valkirias_necesarias and self.recursos_disponibles["Unidades"] >= unidades_necesarias:
-            self.recursos_disponibles["Valkirias"] -= valkirias_necesarias
-            self.recursos_disponibles["Unidades"] -= unidades_necesarias
-            print(f"Recursos asignados: {valkirias_necesarias} Valkirias, {unidades_necesarias} Unidades")
-        else:
-            print("No hay suficientes recursos disponibles para esta misión.")
+        # Mostrar los recursos asignados
+        print(f"Recursos asignados: Valkirias - {valkirias_asignadas}, Unidades - {unidades_asignadas}")
 
-    def mostrar_recursos_disponibles(self):
-        print("\nRecursos disponibles:")
-        for recurso, cantidad in self.recursos_disponibles.items():
-            print(f"{recurso}: {cantidad}")
+        # Actualizar recursos disponibles
+        valkirias_disponibles -= valkirias_asignadas
+        unidades_disponibles -= unidades_asignadas
+
+        # Preguntar si hay más misiones pendientes
+        continuar = input("¿Hay más misiones pendientes? (s/n): ").lower()
+        if continuar != 's':
+            break
 
 # Función principal
 def main():
-    asignador = AsignadorRecursos()
+    # Recursos iniciales disponibles
+    valkirias_disponibles = 20
+    unidades_disponibles = 500
 
-    while True:
-        print("\n--- Gestión de Misiones en la Fortaleza de Asgard ---")
-        tipo = input("Ingrese el tipo de misión (defensa, exploración, conquista): ").lower()
-        reino = input("Ingrese el reino destino: ")
-        solicitante = input("Ingrese el dios que solicita la misión (Odín o Loki): ")
+    # Lista de misiones pendientes
+    misiones_pendientes = [
+        Mision("defensa", "Midgard", "Odín"),
+        Mision("conquista", "Jotunheim", "Loki"),
+        Mision("exploración", "Vanaheim", "Freyr"),
+        Mision("defensa", "Asgard", "Thor")
+    ]
 
-        mision = Mision(tipo, reino, solicitante)
-        asignador.asignar_recursos(mision)
-        asignador.mostrar_recursos_disponibles()
-
-        continuar = input("\n¿Desea ingresar otra solicitud de misión? (s/n): ")
-        if continuar.lower() != "s":
-            break
+    # Asignar recursos a las misiones pendientes
+    asignar_recursos(misiones_pendientes, valkirias_disponibles, unidades_disponibles)
 
 if __name__ == "__main__":
     main()

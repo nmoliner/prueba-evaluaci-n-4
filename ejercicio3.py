@@ -61,4 +61,3 @@ inicio = "Rivendell"
 destino = "Minas Tirith"
 distancia_minima = red_ferrocarriles.dijkstra(inicio, destino)
 print(f"La distancia mínima entre {inicio} y {destino} es de {distancia_minima} millas.")
-
